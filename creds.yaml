@@ -1,0 +1,18 @@
+credentials:
+  usernames:
+    farhad:
+      email: farhad@visioimpulse.com
+      name: Farhad
+      password: $2b$12$OZ6IOU4CiqX01lP5lTob0eOnHOdTASfgDc9Uny2QdSJ4PyQv2aGmC
+    saeed:
+      email: saeed.discovery@gmail.com
+      name: Saeed
+      password: $2b$12$oz29HNkyuqz4H5z6cjmaJOh.KlUGBOG42amZX6boXbzJCorPj7DKa
+cookie:
+  expiry_days: 30
+  key: '123456789'
+  name: 'auth'
+preauthorized:
+  emails:
+  - saeed.discovery@gmail.com
+  - farhad@visioimpulse.com
