@@ -174,6 +174,8 @@ if auth():
     # TODO: submit_docs: check if new/exists and save + proper messages + clear uploaded list
     
     docs_dir = os.path.join(os.getcwd(), 'docs', st.session_state["username"])
+    if not os.path.exists(docs_dir):
+        os.makedirs(docs_dir)
     uploaded_contents = os.listdir(docs_dir)
 
     user_docs = UserDocs()
