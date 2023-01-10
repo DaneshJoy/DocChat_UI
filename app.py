@@ -179,14 +179,19 @@ if auth():
     uploaded_contents = os.listdir(docs_dir)
 
     user_docs = UserDocs()
-    upload_link()
-    st.sidebar.markdown("---")
+    
+    
     # upload_doc(user_docs)
     uploaded_files = upload_doc(user_docs, uploaded_contents)
     if len(uploaded_files) > 0:
         st.sidebar.button('Process', on_click=partial(send_to_api, user_docs))
 
     st.sidebar.markdown("---")
+
+    upload_link()
+
+    st.sidebar.markdown("---")
+    
     with st.sidebar.expander("About the App"):
         st.write("""
         Intelligent Question-Answering and Chat on Documents
