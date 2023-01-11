@@ -6,7 +6,6 @@ import streamlit as st
 from utils import timed_alert
 import streamlit_authenticator as stauth
 import requests
-from PIL import Image
 
 
 class UserDocs:
@@ -40,50 +39,6 @@ class UserDocs:
     def add_path(self, saved_path):
         self.paths.append(saved_path)
 
-
-def auth():
-    with open('creds.yaml') as file:
-        try:
-            config = yaml.safe_load(file)
-        except yaml.YAMLError as exc:
-            st.error(exc)
-            return
-
-        authenticator = stauth.Authenticate(
-            config['credentials'],
-            config['cookie']['name'],
-            config['cookie']['key'],
-            config['cookie']['expiry_days'],
-            config['preauthorized']
-        )
-
-        # location : 'sidebar' or 'main'
-        name, authentication_status, username = authenticator.login('Login', 'main')
-
-        if st.session_state['authentication_status']:
-            st.sidebar.write(f'Welcome *{st.session_state["name"]}*')
-            authenticator.logout('Logout', 'sidebar')
-            st.sidebar.markdown('---')
-            st.title('Doc. Chat')
-            st.text_input("Enter your question", value="")
-            st.button('Answer', on_click=partial(send_question_to_api, None))
-            return True
-
-        elif st.session_state['authentication_status'] == False:
-            timed_alert('Invalid username or password', type_='error')
-        # elif st.session_state['authentication_status'] == None:
-        #     timed_alert('Please enter your username and password')
-        
-        image = Image.open('assets/concepts_haystack_handdrawn_nobg_white_arrow.png')
-        st.image(image, caption=None)
-        
-        return False
-    
-def send_question_to_api(question):
-    timed_alert(f"Generating answer ...\n Please wait")
-
-def send_link_to_api(link):
-    timed_alert(f"Processing URL ...\n Please wait")
 
 def upload_link():
     url = st.sidebar.text_input("Enter a url to crawl", value="")
@@ -164,15 +119,40 @@ def save_uploaded_file(uploaded_file):
         f.write(uploaded_file.getbuffer())
     return save_path
 
+
+def card_begin_str():
+    return ("""
+        <style>
+        .button {
+        border: none;
+        color: navy;
+        padding: 5px 5px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 12px;
+        margin: 4px 2px;
+        cursor: hand;
+        }
+
+        .button1 {color: red; background-color: #FFCCCC;}
+        .button2 {background-color: lightblue;}
+        </style>"""
+        f'<button class="button button1">delete</button>'
+        f'<button class="button button2">download</button>'
+    )
+    
 def send_to_api(user_docs):
     # placeholder = st.sidebar.empty()
     # placeholder.success(f"Started processing {user_docs.paths[0]}")
     st.sidebar.success(f"Started processing ...\n Please wait")
 
-if auth():
-    # TODO: upload_doc: only uploads and returns list of uploaded_files
-    # TODO: submit_docs: check if new/exists and save + proper messages + clear uploaded list
+
+if st.session_state['authentication_status']:    
     
+    for _ in range(2):
+        st.sidebar.write("")
+        
     docs_dir = os.path.join(os.getcwd(), 'docs', st.session_state["username"])
     if not os.path.exists(docs_dir):
         os.makedirs(docs_dir)
@@ -192,18 +172,28 @@ if auth():
 
     st.sidebar.markdown("---")
     
-    with st.sidebar.expander("About the App"):
-        st.write("""
-        Intelligent Question-Answering and Chat on Documents
-        """)
-    
+    st.markdown('## User Documents')
     st.markdown("---")
     file_names = [f for f in uploaded_files]
-    s = ''
-    with st.expander('Your Contents', expanded=True):
-        for i in file_names:
-            s += "- " + i + "\n"
+    
+    cc = st.columns(3)
+    for i, f in enumerate(file_names):
+        with cc[i%3]:
+            with st.expander(f"{f}", expanded=False):
+                html3 = f"""
+                    <div>
+                        <button type="button">delete</button>
+                        <button type="button">download</button>
+                    </div>
 
-        st.markdown(s)
+                    """
 
-    # files_list = st.selectbox('Select a content', options=file_names)
+                # st.markdown(html3, unsafe_allow_html=True)
+                st.markdown(card_begin_str(), unsafe_allow_html=True)
+                # st.button('delete', key=i)
+                # st.button('download', key=i+100)
+    
+    
+
+else:
+    st.markdown('Please [login](/) to access your documents')
