@@ -8,6 +8,7 @@ import streamlit_authenticator as stauth
 import requests
 
 
+st.set_page_config(layout="wide")
 
 def set_state_if_absent(key, value):
     if key not in st.session_state:
@@ -58,7 +59,10 @@ if authenticator:
     # TODO: submit_docs: check if new/exists and save + proper messages + clear uploaded list
     
     st.title('Doc. Chat')
-    st.text_input("Enter your question", value="")
+    st.markdown("##### Intelligent Question-Answering on Documents")
+    # st.markdown('---')
+    st.text_input(label="Query", value="", placeholder="Enter your question",
+        key="placeholder", label_visibility='hidden')
     st.button('Answer', on_click=partial(send_question_to_api, None))
     
     for _ in range(2):
