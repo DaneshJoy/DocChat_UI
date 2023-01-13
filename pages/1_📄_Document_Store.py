@@ -102,7 +102,7 @@ def upload_link():
     # options = webdriver.ChromeOptions()
     # or from selenium.webdriver.chrome.options import Options
     # options.binary_location = '/home/appuser/.wdm/drivers/chromedriver/linux64/109.0.5414/chromedriver'
-    if url != ''
+    if url != '':
         crawler = Crawler(output_dir=URL_DIR, crawler_depth=1,
             webdriver_options=["--disable-gpu", "--no-sandbox", "--single-process"])
         sub_urls = crawler._extract_sublinks_from_url(base_url=url)
