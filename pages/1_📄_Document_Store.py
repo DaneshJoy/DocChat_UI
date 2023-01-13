@@ -1,6 +1,6 @@
 import os
 import shutil
-import requests
+import time
 from random import randint
 from functools import partial
 import base64
@@ -34,6 +34,7 @@ preprocessor = PreProcessor(
     split_respect_sentence_boundary=True,
 )
 
+
 styles = {'material-icons':{'color': 'lightgreen'},
           'text-icon-link-close-container': {'box-shadow': '#3896de 1px 1px 1px 1px',
                                              'width': '90%',
@@ -54,11 +55,17 @@ styles = {'material-icons':{'color': 'lightgreen'},
 #                         externalLink='', url='#', styles=styles, key="foo2")
 
 
-images = []
-for file in ["assets/delete.png", "assets/download.png"]:
+download_image = []
+for file in ["assets/download.png"]:
     with open(file, "rb") as image:
         encoded = base64.b64encode(image.read()).decode()
-        images.append(f"data:image/png;base64,{encoded}")
+        download_image.append(f"data:image/png;base64,{encoded}")
+
+delete_image = []
+for file in ["assets/delete.png"]:
+    with open(file, "rb") as image:
+        encoded = base64.b64encode(image.read()).decode()
+        delete_image.append(f"data:image/png;base64,{encoded}")
 
 
 class UserDocs:
@@ -114,13 +121,35 @@ def upload_link():
             
             placeholder.empty()
 
-if 'key' not in st.session_state: st.session_state.key = str(randint(1000, 100000000))
+def preocess_docs():
+    all_docs = convert_files_to_docs(dir_path=TMP_DIR,
+                                    clean_func=clean_wiki_text,
+                                    split_paragraphs=True)
+    for doc_txt in all_docs:
+        doc_filename = f"{os.path.basename(doc_txt.meta['name']).split('.')[0]}.txt"
+        with open(os.path.join(TXT_DIR, doc_filename), 'w', encoding="utf-8") as f:
+            f.write(doc_txt.content)
+    
+    # %% Preprocess
+    chunks = preprocessor.process(all_docs)
+    print(f"n_docs_input: {len(all_docs)}\nn_docs_output: {len(chunks)}")
+
+    for chunk in chunks:
+        chunk_filename = f"{chunk.meta['name']}_{chunk.meta['_split_id']}.txt"
+        with open(os.path.join(CHK_DIR, chunk_filename), 'w', encoding="utf-8") as f:
+            f.write(chunk.content)
+    
+    return len(all_docs), len(chunks)
+
+
+if 'uploader_key' not in st.session_state:
+    st.session_state.uploader_key = str(randint(1000, 100000000))
 def upload_doc(user_docs, uploaded_contents):
     uploaded_any = False
     uploaded_files = st.sidebar.file_uploader("Upload a document file",
                                             type=['txt', 'doc', 'docx', 'pdf'],
                                             accept_multiple_files=True,
-                                            key=st.session_state.key)
+                                            key=st.session_state.uploader_key)
 
     if uploaded_files:
         css = """
@@ -139,43 +168,32 @@ def upload_doc(user_docs, uploaded_contents):
             if not user_docs.file_exists(file.name):
                 save_path = save_uploaded_file(file)
                 uploaded_any = True
-            else:
+            elif not uploaded_any:
                 with progress_container:
                     timed_alert(f'Uploaded file already exists:\n "{file.name}"',
                                 type_='error')
+                    
             process_progress.progress((i+1) * 100//len(uploaded_files))
         
-        all_docs = convert_files_to_docs(dir_path=TMP_DIR,
-                                        clean_func=clean_wiki_text,
-                                        split_paragraphs=True)
-        for doc_txt in all_docs:
-            doc_filename = f"{os.path.basename(doc_txt.meta['name']).split('.')[0]}.txt"
-            with open(os.path.join(TXT_DIR, doc_filename), 'w', encoding="utf-8") as f:
-                f.write(doc_txt.content)
-        
-        # %% Preprocess
-        docs_default = preprocessor.process(all_docs)
-        print(f"n_docs_input: {len(all_docs)}\nn_docs_output: {len(docs_default)}")
-
-        for chunk in docs_default:
-            chunk_filename = f"{chunk.meta['name']}_{chunk.meta['_split_id']}.txt"
-            with open(os.path.join(CHK_DIR, chunk_filename), 'w', encoding="utf-8") as f:
-                f.write(chunk.content)
+        num_docs, num_chunks = preocess_docs()
 
         with progress_container:
-            st.markdown(f"Successfully processed **{len(all_docs)}** document(s)"
-                f"and created **{len(docs_default)}** passages")
+            if num_docs > 0:
+                message = (f"Processed {num_docs} document(s)"
+                        f"and created {num_chunks} passages")
+                
+                custom_notification_box(icon='add_task',
+                                    textDisplay=message,
+                                    externalLink='', url='#', styles=styles, key="foo")
+                time.sleep(2)
 
         placeholder.empty()
         process_progress.empty()
         uploaded_files = None
-        if 'key' in st.session_state.keys():
-            st.session_state.pop('key')
-        with progress_container:
-            timed_alert('Document processing finished')
-            # custom_notification_box(icon='add_task',
-            #                     textDisplay='Finished processing documents',
-            #                     externalLink='', url='#', styles=styles, key="foo")
+        if 'uploader_key' in st.session_state.keys():
+            st.session_state.pop('uploader_key')
+        # with progress_container:
+        #     timed_alert('Document processing finished')
         
         for f in os.listdir(TMP_DIR):
             shutil.move(os.path.join(TMP_DIR, f), os.path.join(DOC_DIR, f))
@@ -270,35 +288,73 @@ if st.session_state['authentication_status']:
     #     for n in removed_names:
     #         delete_file(n)
     #         timed_alert(f'Removed {n}')
+    st.session_state['prep'] = False
 
-    cc = st.columns(2)
-    for i, f in enumerate(uploaded_contents):
-        with cc[i%2]:
-            with st.expander(f"{f}", expanded=False):
-                # html3 = f"""
-                #     <div>
-                #         <button type="button">delete</button>
-                #         <button type="button">download</button>
-                #     </div>
+    if not st.session_state['prep'] :
+        cc = st.columns(2)
+        for i, f in enumerate(uploaded_contents):
+            with cc[i%2]:
+                with st.expander(f"{f}", expanded=False):
+                    # html3 = f"""
+                    #     <div>
+                    #         <button type="button">delete</button>
+                    #         <button type="button">download</button>
+                    #     </div>
 
-                #     """
+                    #     """
 
-                # # st.markdown(html3, unsafe_allow_html=True)
-                # st.markdown(card_buttons(), unsafe_allow_html=True)
-                # # st.button('delete', key=i)
-                # # st.button('download', key=i+100)
+                    # # st.markdown(html3, unsafe_allow_html=True)
+                    # st.markdown(card_buttons(), unsafe_allow_html=True)
+                    # # st.button('delete', key=i)
+                    # # st.button('download', key=i+100)
 
-                clicked = clickable_images(
-                    images,
-                    div_style={"display": "flex", "justify-content": "right", "flex-wrap": "wrap"},
-                    img_style={"margin": "2px", "height": "30px", "cursor": "pointer"},
-                    key=i
-                )
+                    # clicked0 = clickable_images(
+                    #     download_image,
+                    #     div_style={"display": "flex", "justify-content": "right", "flex-wrap": "wrap"},
+                    #     img_style={"margin": "2px", "height": "30px", "cursor": "pointer"},
+                    #     key=f"download_{i}"
+                    # )
 
-                # st.markdown(f"Image #{clicked} clicked" if clicked > -1 else "No image clicked")
+                    # clicked1 = clickable_images(
+                    #     delete_image,
+                    #     div_style={"display": "flex", "justify-content": "right", "flex-wrap": "wrap"},
+                    #     img_style={"margin": "2px", "height": "30px", "cursor": "pointer"},
+                    #     key=f'delete_{i}'
+                    # )
+
+                    with open(os.path.join(DOC_DIR, f), "rb") as file:
+                        btn = st.download_button(
+                                label="⬇️ Download PDF",
+                                data=file,
+                                file_name=f,
+                                mime='application/octet-stream',
+                                key=f'd_pdf_{i}'
+                            )
+                    
+                    # # pdf from string
+                    # import pdfkit
+                    # pdf = pdfkit.from_string(html, False)
+                    
+                    # txt_file = f.split('.')[0] + '.txt'
+                    # with open(os.path.join(TXT_DIR, txt_file), "rb") as file:
+                    #     btn = st.download_button(
+                    #             label="Download Text",
+                    #             data=file,
+                    #             file_name=txt_file,
+                    #             mime='text/plain',
+                    #             key=f'd_txt_{i}'
+                    #         )
+    
+
+                    # print(f"Image #{clicked} clicked" if clicked > -1 else "No image clicked")
+        st.session_state['prep'] = True
 
     user_docs = UserDocs()
-    
+
+    # print(st.session_state)
+
+    # if st.session_state.get("delete_0") is not None:
+    #     print('---------------')
     
     # upload_doc(user_docs)
     uploaded = upload_doc(user_docs, uploaded_contents)
