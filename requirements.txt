@@ -1,4 +1,5 @@
 streamlit
 streamlit-authenticator
 streamlit-custom-notification-box
-farm-haystack[ocr,crawl]
+farm-haystack[ocr,crawler]
+webdriver_manager

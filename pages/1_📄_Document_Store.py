@@ -91,6 +91,16 @@ def upload_link():
     if url is not None or url != '':
         st.sidebar.markdown(f"{url}")
         # st.sidebar.button('Crawl', on_click=partial(send_link_to_api, None))
+    
+    with progress_container:
+        placeholder = st.empty()
+        placeholder.write(' 🚧 >>> Processing documents ...')
+    
+    crawler = Crawler(output_dir=URL_DIR, crawler_depth=1)
+    sub_urls = crawler._extract_sublinks_from_url(base_url=url)
+    st.sidebar.write("Sub URLs:")
+    for u in sub_urls:
+        st.sidebar.markdown(f"{u}")
 
 if 'key' not in st.session_state: st.session_state.key = str(randint(1000, 100000000))
 def upload_doc(user_docs, uploaded_contents):
