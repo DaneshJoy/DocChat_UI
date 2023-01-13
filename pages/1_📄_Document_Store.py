@@ -93,16 +93,16 @@ def upload_link():
         st.sidebar.markdown(f"{url}")
         # st.sidebar.button('Crawl', on_click=partial(send_link_to_api, None))
     
-    with progress_container:
-        placeholder = st.empty()
-        placeholder.write(' 🚧 >>> Processing documents ...')
-    
     
     # from selenium import webdriver
     # options = webdriver.ChromeOptions()
     # or from selenium.webdriver.chrome.options import Options
     # options.binary_location = '/home/appuser/.wdm/drivers/chromedriver/linux64/109.0.5414/chromedriver'
     if url != '':
+        with progress_container:
+            placeholder = st.empty()
+            placeholder.write(' 🚧 >>> Processing documents ...')
+    
         crawler = Crawler(output_dir=URL_DIR, crawler_depth=1,
             webdriver_options=["--disable-gpu", "--no-sandbox", "--single-process"])
         sub_urls = crawler._extract_sublinks_from_url(base_url=url)
@@ -110,6 +110,8 @@ def upload_link():
         st.sidebar.write("Sub URLs:")
         for u in sub_urls:
             st.sidebar.markdown(f"{u}")
+        
+        placeholder.empty()
 
 if 'key' not in st.session_state: st.session_state.key = str(randint(1000, 100000000))
 def upload_doc(user_docs, uploaded_contents):
