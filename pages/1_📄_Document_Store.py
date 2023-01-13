@@ -5,6 +5,7 @@ from random import randint
 from functools import partial
 import base64
 
+
 import streamlit as st
 import streamlit_authenticator as stauth
 from streamlit_custom_notification_box import custom_notification_box
@@ -96,7 +97,13 @@ def upload_link():
         placeholder = st.empty()
         placeholder.write(' 🚧 >>> Processing documents ...')
     
-    crawler = Crawler(output_dir=URL_DIR, crawler_depth=1)
+    
+    # from selenium import webdriver
+    # options = webdriver.ChromeOptions()
+    # or from selenium.webdriver.chrome.options import Options
+    # options.binary_location = '/home/appuser/.wdm/drivers/chromedriver/linux64/109.0.5414/chromedriver'
+    crawler = Crawler(output_dir=URL_DIR, crawler_depth=1,
+        webdriver_options=["--disable-gpu", "--no-sandbox", "--single-process"])
     sub_urls = crawler._extract_sublinks_from_url(base_url=url)
     # crawler._extract_sublinks_from_url -> already_found_links: Optional[List] = None
     st.sidebar.write("Sub URLs:")
