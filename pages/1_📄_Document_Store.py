@@ -102,13 +102,14 @@ def upload_link():
     # options = webdriver.ChromeOptions()
     # or from selenium.webdriver.chrome.options import Options
     # options.binary_location = '/home/appuser/.wdm/drivers/chromedriver/linux64/109.0.5414/chromedriver'
-    crawler = Crawler(output_dir=URL_DIR, crawler_depth=1,
-        webdriver_options=["--disable-gpu", "--no-sandbox", "--single-process"])
-    sub_urls = crawler._extract_sublinks_from_url(base_url=url)
-    # crawler._extract_sublinks_from_url -> already_found_links: Optional[List] = None
-    st.sidebar.write("Sub URLs:")
-    for u in sub_urls:
-        st.sidebar.markdown(f"{u}")
+    if url != ''
+        crawler = Crawler(output_dir=URL_DIR, crawler_depth=1,
+            webdriver_options=["--disable-gpu", "--no-sandbox", "--single-process"])
+        sub_urls = crawler._extract_sublinks_from_url(base_url=url)
+        # crawler._extract_sublinks_from_url -> already_found_links: Optional[List] = None
+        st.sidebar.write("Sub URLs:")
+        for u in sub_urls:
+            st.sidebar.markdown(f"{u}")
 
 if 'key' not in st.session_state: st.session_state.key = str(randint(1000, 100000000))
 def upload_doc(user_docs, uploaded_contents):
