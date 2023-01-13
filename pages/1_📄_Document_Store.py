@@ -104,9 +104,8 @@ def upload_link():
             placeholder.write(' 🚧 >>> Processing URL ...')
         
         with st.spinner('Please wait ...'):
-    
-            crawler = Crawler(output_dir=URL_DIR, crawler_depth=1,
-                webdriver_options=["--disable-gpu", "--no-sandbox"])
+            # webdriver_options=["--disable-gpu", "--no-sandbox", "--single-process"])
+            crawler = Crawler(output_dir=URL_DIR, crawler_depth=1)
             sub_urls = crawler._extract_sublinks_from_url(base_url=url)
             # crawler._extract_sublinks_from_url -> already_found_links: Optional[List] = None
             st.sidebar.write(f"Found {len(sub_urls)} sub-urls")
