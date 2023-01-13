@@ -98,6 +98,7 @@ def upload_link():
     
     crawler = Crawler(output_dir=URL_DIR, crawler_depth=1)
     sub_urls = crawler._extract_sublinks_from_url(base_url=url)
+    # crawler._extract_sublinks_from_url -> already_found_links: Optional[List] = None
     st.sidebar.write("Sub URLs:")
     for u in sub_urls:
         st.sidebar.markdown(f"{u}")
