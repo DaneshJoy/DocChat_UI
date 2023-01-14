@@ -12,7 +12,6 @@ def clear_docs():
     btn_container.empty()
     with progress_container:
         st.write('⌛ Please wait...')
-
         with st.spinner('Clearing all documents...'):
             # if os.path.exists(Paths.TMP_DIR):
             #     shutil.rmtree(Paths.TMP_DIR)
