@@ -142,7 +142,7 @@ if 'uploader_key' not in st.session_state:
     st.session_state.uploader_key = str(randint(1000, 100000000))
 def upload_doc(user_docs, uploaded_contents):
     uploaded_any = False
-    uploaded_files = st.sidebar.file_uploader("Upload a document file",
+    uploaded_files = st.sidebar.file_uploader("📤 Upload a document file",
                                             type=['txt', 'doc', 'docx', 'pdf'],
                                             accept_multiple_files=True,
                                             key=st.session_state.uploader_key)
