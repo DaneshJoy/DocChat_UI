@@ -16,13 +16,9 @@ from haystack.utils import convert_files_to_docs, clean_wiki_text
 from haystack.nodes import PreProcessor
 
 from utils import timed_alert
+from config import Paths
 
 
-TMP_DIR = os.path.join(os.getcwd(), 'temp', st.session_state["username"])
-DOC_DIR = os.path.join(os.getcwd(), 'docs', st.session_state["username"])
-TXT_DIR = os.path.join(os.getcwd(), 'txts', st.session_state["username"])
-CHK_DIR = os.path.join(os.getcwd(), 'chks', st.session_state["username"])
-URL_DIR = os.path.join(os.getcwd(), 'urls', st.session_state["username"])
 
 preprocessor = PreProcessor(
     clean_empty_lines=True,
@@ -73,8 +69,8 @@ class UserDocs:
         pass
 
     def file_exists(self, file_name):
-        existing_files = os.listdir(DOC_DIR)
-        temp_files = os.listdir(TMP_DIR)
+        existing_files = os.listdir(Paths.DOC_DIR)
+        temp_files = os.listdir(Paths.TMP_DIR)
         for doc in [*existing_files, *temp_files]:
             if doc == file_name:
                 return True
@@ -83,7 +79,7 @@ class UserDocs:
     def check_removed(self, all_files):
         removed_files = []
         
-        existing_names = os.listdir(DOC_DIR)
+        existing_names = os.listdir(Paths.DOC_DIR)
         for doc_file in existing_names:
             if doc_file not in all_files:
                 removed_files.append(doc_file)
@@ -112,7 +108,7 @@ def upload_link():
         
         with st.spinner('Please wait ...'):
             # webdriver_options=["--disable-gpu", "--no-sandbox", "--single-process"])
-            crawler = Crawler(output_dir=URL_DIR, crawler_depth=1)
+            crawler = Crawler(output_dir=Paths.URL_DIR, crawler_depth=1)
             sub_urls = crawler._extract_sublinks_from_url(base_url=url)
             # crawler._extract_sublinks_from_url -> already_found_links: Optional[List] = None
             st.sidebar.write(f"Found {len(sub_urls)} sub-urls")
@@ -122,12 +118,12 @@ def upload_link():
             placeholder.empty()
 
 def preocess_docs():
-    all_docs = convert_files_to_docs(dir_path=TMP_DIR,
+    all_docs = convert_files_to_docs(dir_path=Paths.TMP_DIR,
                                     clean_func=clean_wiki_text,
                                     split_paragraphs=True)
     for doc_txt in all_docs:
         doc_filename = f"{os.path.basename(doc_txt.meta['name']).split('.')[0]}.txt"
-        with open(os.path.join(TXT_DIR, doc_filename), 'w', encoding="utf-8") as f:
+        with open(os.path.join(Paths.TXT_DIR, doc_filename), 'w', encoding="utf-8") as f:
             f.write(doc_txt.content)
     
     # %% Preprocess
@@ -136,7 +132,7 @@ def preocess_docs():
 
     for chunk in chunks:
         chunk_filename = f"{chunk.meta['name']}_{chunk.meta['_split_id']}.txt"
-        with open(os.path.join(CHK_DIR, chunk_filename), 'w', encoding="utf-8") as f:
+        with open(os.path.join(Paths.CHK_DIR, chunk_filename), 'w', encoding="utf-8") as f:
             f.write(chunk.content)
     
     return len(all_docs), len(chunks)
@@ -195,21 +191,21 @@ def upload_doc(user_docs, uploaded_contents):
         # with progress_container:
         #     timed_alert('Document processing finished')
         
-        for f in os.listdir(TMP_DIR):
-            shutil.move(os.path.join(TMP_DIR, f), os.path.join(DOC_DIR, f))
+        for f in os.listdir(Paths.TMP_DIR):
+            shutil.move(os.path.join(Paths.TMP_DIR, f), os.path.join(Paths.DOC_DIR, f))
 
     return uploaded_any
 
 
 
 def delete_file(file_name):
-    file_path = os.path.join(DOC_DIR, file_name)
+    file_path = os.path.join(Paths.DOC_DIR, file_name)
     if os.path.exists(file_path):
         os.remove(file_path)
 
 
 def save_uploaded_file(uploaded_file):
-    save_path = os.path.join(TMP_DIR, uploaded_file.name)
+    save_path = os.path.join(Paths.TMP_DIR, uploaded_file.name)
     with open(save_path, "wb") as f:
         f.write(uploaded_file.getbuffer())
     return save_path
@@ -262,18 +258,18 @@ if st.session_state['authentication_status']:
     for _ in range(2):
         st.sidebar.write("")
     
-    if not os.path.exists(TMP_DIR):
-        os.makedirs(TMP_DIR)
-    if not os.path.exists(DOC_DIR):
-        os.makedirs(DOC_DIR)
-    if not os.path.exists(TXT_DIR):
-        os.makedirs(TXT_DIR)
-    if not os.path.exists(CHK_DIR):
-        os.makedirs(CHK_DIR)
-    if not os.path.exists(URL_DIR):
-        os.makedirs(URL_DIR)
+    if not os.path.exists(Paths.TMP_DIR):
+        os.makedirs(Paths.TMP_DIR)
+    if not os.path.exists(Paths.DOC_DIR):
+        os.makedirs(Paths.DOC_DIR)
+    if not os.path.exists(Paths.TXT_DIR):
+        os.makedirs(Paths.TXT_DIR)
+    if not os.path.exists(Paths.CHK_DIR):
+        os.makedirs(Paths.CHK_DIR)
+    if not os.path.exists(Paths.URL_DIR):
+        os.makedirs(Paths.URL_DIR)
 
-    uploaded_contents = os.listdir(DOC_DIR)
+    uploaded_contents = os.listdir(Paths.DOC_DIR)
 
 
     st.markdown('## Processed Documents')
@@ -322,7 +318,7 @@ if st.session_state['authentication_status']:
                     #     key=f'delete_{i}'
                     # )
 
-                    with open(os.path.join(DOC_DIR, f), "rb") as file:
+                    with open(os.path.join(Paths.DOC_DIR, f), "rb") as file:
                         btn = st.download_button(
                                 label="⬇️ Download PDF",
                                 data=file,
@@ -336,7 +332,7 @@ if st.session_state['authentication_status']:
                     # pdf = pdfkit.from_string(html, False)
                     
                     # txt_file = f.split('.')[0] + '.txt'
-                    # with open(os.path.join(TXT_DIR, txt_file), "rb") as file:
+                    # with open(os.path.join(Paths.TXT_DIR, txt_file), "rb") as file:
                     #     btn = st.download_button(
                     #             label="Download Text",
                     #             data=file,
