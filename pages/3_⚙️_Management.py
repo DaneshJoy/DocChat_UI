@@ -1,16 +1,15 @@
 import os
 import shutil
-from glob import glob
-import time
 
 import streamlit as st
 
-from config import Paths
+from utils.config import Paths
+from utils.utils import timed_alert
 
 
 def clear_docs():
     btn_container.empty()
-    with progress_container:
+    with btn_container:
         st.write('⌛ Please wait...')
         with st.spinner('Clearing all documents...'):
             # if os.path.exists(Paths.TMP_DIR):
@@ -34,18 +33,29 @@ def clear_docs():
                 os.makedirs(Paths.CHK_DIR)
             if not os.path.exists(Paths.URL_DIR):
                 os.makedirs(Paths.URL_DIR)
-                
-    progress_container.empty()
-    with progress_container:
-        st.write('✔️ Cleared all documents')
 
-    progress_container.empty()
+    timed_alert('✅ Cleared all documents', type_='success')
 
 
-st.markdown('## Manage your documents')
-st.markdown("---")
+if 'authentication_status' not in st.session_state:
+    st.session_state['authentication_status'] = False
 
-btn_container = st.empty()
-progress_container = st.empty()
-with btn_container:
-    btn_clear = st.button('❌ Clear Document Store', on_click=clear_docs)
+if st.session_state['authentication_status']:
+    st.markdown('## Manage your documents')
+    st.markdown("---")
+
+    c1, c2, c3 = st.columns([1, 1, 7])
+    with c1:
+        st.markdown('Documents: <span style="color:Teal">' +
+                    f'{len(os.listdir(Paths.DOC_DIR))}</span>', unsafe_allow_html=True)
+
+    with c2:
+        st.markdown('Passages: <span style="color:Teal">' +
+                    f'{len(os.listdir(Paths.CHK_DIR))}</span>', unsafe_allow_html=True)
+    btn_container = st.empty()
+    with btn_container:
+        btn_clear = st.button('❌ Clear Document Store', on_click=clear_docs)
+else:
+    st.markdown('Please <a href="/" target="_self">login</a> to access this page',
+                unsafe_allow_html=True)
+

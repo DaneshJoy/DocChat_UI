@@ -1,1 +1,13 @@
-tar -xvf xpdf-tools-linux-4.04.tar.gz && sudo cp xpdf-tools-linux-4.04/bin64/pdftotext /usr/local/bin
+# Hide made with Streamlit from footer
+hide="""
+<style>
+footer{
+	visibility: hidden;
+    position: relative;
+}
+.viewerBadge_container__1QSob{
+    visibility: hidden;
+}
+<style>
+"""
+st.markdown(hide, unsafe_allow_html=True)
