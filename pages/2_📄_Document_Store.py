@@ -144,8 +144,11 @@ def upload_link():
             # webdriver_options=["--disable-gpu", "--no-sandbox", "--single-process"])
             crawler = Crawler(output_dir=Paths.URL_DIR, crawler_depth=1)
             sub_urls = crawler._extract_sublinks_from_url(base_url=url)
+            with st.sidebar.expander(f"Found {len(sub_urls)} sub-urls", expanded=False):
+                for _url in sub_urls:
+                    st.markdown(_url)
             # crawler._extract_sublinks_from_url -> already_found_links: Optional[List] = None
-            st.sidebar.write(f"Found {len(sub_urls)} sub-urls")
+            # st.sidebar.write(f"Found {len(sub_urls)} sub-urls")
             # for u in sub_urls:
             #     st.sidebar.markdown(f"{u}")
 
