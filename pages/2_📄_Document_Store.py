@@ -49,7 +49,7 @@ def process_docs():
     try:
         # chunk_files = [('file', (os.path.basename(ff), open(ff, 'rb'))) for ff in chk_paths]
         chunk_files = [('files', open(ff, 'rb')) for ff in chk_paths]
-        r = requests.post("http://localhost:8000/uploadfiles", files=chunk_files)
+        r = requests.post("http://54.242.28.52/uploadfiles", files=chunk_files)
         print('Send chunk files status:', r.status_code)
     except Exception as e:
         print('Send ERROR:', e)
