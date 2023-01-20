@@ -1,7 +1,9 @@
 import os
+import glob
 import time
 import shutil
 from random import randint
+import requests
 
 import streamlit as st
 from streamlit_custom_notification_box import custom_notification_box
@@ -42,6 +44,19 @@ def process_docs():
         with open(os.path.join(Paths.CHK_DIR, chunk_filename), 'w', encoding="utf-8") as f:
             f.write(chunk.content)
 
+    chunk_files = []
+    chk_paths = glob.glob(os.path.join(Paths.CHK_DIR, '*.txt'))
+    try:
+        # chunk_files = [('file', (os.path.basename(ff), open(ff, 'rb'))) for ff in chk_paths]
+        chunk_files = [('files', open(ff, 'rb')) for ff in chk_paths]
+        r = requests.post("http://localhost:8000/uploadfiles", files=chunk_files)
+        print('Send chunk files status:', r.status_code)
+    except Exception as e:
+        print('Send ERROR:', e)
+    finally:
+        # for (_, (_, ff)) in chunk_files:
+        for (_, ff) in chunk_files:
+            ff.close()
     return len(all_docs), len(chunks)
 
 
@@ -147,6 +162,10 @@ def upload_link():
             with st.sidebar.expander(f"Found {len(sub_urls)} sub-urls", expanded=False):
                 for _url in sub_urls:
                     st.markdown(_url)
+            if len(sub_urls) > 0:
+                clicked = st.sidebar.button('📚 Get Content')
+                if clicked:
+                    crawler.crawl(output_dir=Paths.URL_DIR, urls=url, crawler_depth=1)
             # crawler._extract_sublinks_from_url -> already_found_links: Optional[List] = None
             # st.sidebar.write(f"Found {len(sub_urls)} sub-urls")
             # for u in sub_urls:
