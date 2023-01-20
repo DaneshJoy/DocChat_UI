@@ -1,4 +1,5 @@
 import yaml
+import requests
 from functools import partial
 
 import streamlit as st
@@ -36,7 +37,14 @@ def main():
         # st.markdown('---')
         st.text_input(label="Query", value="", placeholder="Enter your question",
                       key="question", label_visibility='hidden', on_change=send_question_to_api)
-        st.button('Answer', on_click=send_question_to_api)
+        clicked = st.button('Answer', on_click=send_question_to_api)
+        if clicked:
+            with st.spinner('Please wait...'):
+                r = requests.get(f"http://54.242.28.52/ai/answer/{st.session_state.question}")
+                if 'error' in r.text.lower():
+                    st.write('Answer: Not Found !')
+                else:
+                    st.write(r.text)
 
         logout(authenticator)
     else:
