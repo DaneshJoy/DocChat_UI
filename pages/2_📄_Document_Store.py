@@ -1,3 +1,4 @@
+import json
 import os
 import glob
 import time
@@ -49,8 +50,13 @@ def process_docs():
     try:
         # chunk_files = [('file', (os.path.basename(ff), open(ff, 'rb'))) for ff in chk_paths]
         chunk_files = [('files', open(ff, 'rb')) for ff in chk_paths]
-        r = requests.post("http://54.242.28.52/doc/get_docs", files=chunk_files)
+        # headers = {'Content-Type': 'application/json; charset=utf-8'}
+        # headers = {'Content-type': 'multipart/form-data'}
+        r = requests.post("http://54.242.28.52/doc/send_chunks",
+                          files=chunk_files,
+                          params={"user": st.session_state["username"]})
         print('Send chunk files status:', r.status_code)
+        print('Send chunk files message:', r.json()['message'])
     except Exception as e:
         print('Send ERROR:', e)
     finally:

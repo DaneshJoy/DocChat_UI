@@ -7,17 +7,21 @@ with open("hashed_pw.pkl", "rb") as f:
     hashed_passwords = pickle.load(f)
 
 creds = {'credentials':
-             {'usernames':
-                  {'farhad':
-                       {'email': 'farhad@visioimpulse.com',
-                        'name': 'Farhad',
-                        'password': hashed_passwords[0]},
-                   'saeed':
-                       {'email': 'saeed.discovery@gmail.com',
-                        'name': 'Saeed',
-                        'password': hashed_passwords[1]}
-                   }
-              },
+         {'usernames':
+          {'farhad':
+           {'email': 'farhad@visioimpulse.com',
+            'name': 'Farhad',
+            'password': hashed_passwords[0]},
+           'saeed':
+           {'email': 'saeed.discovery@gmail.com',
+            'name': 'Saeed',
+            'password': hashed_passwords[1]},
+           'guest':
+           {'email': '',
+            'name': 'Guest',
+            'password': hashed_passwords[2]}
+           }
+          },
          'cookie':
              {'expiry_days': 30,
               'key': '123456789',

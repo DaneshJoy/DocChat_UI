@@ -3,7 +3,7 @@ import pickle
 import streamlit_authenticator as stauth
 
 # usernames = ["farhad", "saeed"]
-passwords = ["123", "456"]
+passwords = ["123", "456", "guest"]
 
 hashed_passwords = stauth.Hasher(passwords).generate()
 

@@ -7,11 +7,15 @@ credentials:
     farhad:
       email: farhad@visioimpulse.com
       name: Farhad
-      password: $2b$12$ZhlE1IPDQBYXaG7qhN/d6.NY3Fnb/gfWc7/2zwsnYu7l28RYe/9Ye
+      password: $2b$12$wCUULqB8ZEH0LGcs9RnDPOMxaoqOODdANS07rpAu6E6w0zR4W34Oa
+    guest:
+      email: ''
+      name: Guest
+      password: $2b$12$xzdq20cb5nnfwfiu23tqXerRodLcNsXvCeXMRpYg9jST1tzbswAJu
     saeed:
       email: saeed.discovery@gmail.com
       name: Saeed
-      password: $2b$12$q6VU7zNpgm.xWlfjjODTDOxZ8z.heUN7qyqPxJI6M2dgf0iIVm1u6
+      password: $2b$12$5hqt7yL6YQFsHKOl5kyVb.POBeqbpLdLuFB1OssCl3Yx5Yaub7N/y
 preauthorized:
   emails:
   - saeed.discovery@gmail.com

@@ -4,3 +4,5 @@ streamlit-custom-notification-box
 st-clickable-images
 farm-haystack[ocr,crawler]
 webdriver_manager
+openai
+tiktoken

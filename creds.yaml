@@ -1,17 +1,21 @@
+cookie:
+  expiry_days: 30
+  key: '123456789'
+  name: auth
 credentials:
   usernames:
     farhad:
       email: farhad@visioimpulse.com
       name: Farhad
-      password: $2b$12$OZ6IOU4CiqX01lP5lTob0eOnHOdTASfgDc9Uny2QdSJ4PyQv2aGmC
+      password: $2b$12$wCUULqB8ZEH0LGcs9RnDPOMxaoqOODdANS07rpAu6E6w0zR4W34Oa
+    guest:
+      email: ''
+      name: Guest
+      password: $2b$12$xzdq20cb5nnfwfiu23tqXerRodLcNsXvCeXMRpYg9jST1tzbswAJu
     saeed:
       email: saeed.discovery@gmail.com
       name: Saeed
-      password: $2b$12$oz29HNkyuqz4H5z6cjmaJOh.KlUGBOG42amZX6boXbzJCorPj7DKa
-cookie:
-  expiry_days: 30
-  key: '123456789'
-  name: 'auth'
+      password: $2b$12$5hqt7yL6YQFsHKOl5kyVb.POBeqbpLdLuFB1OssCl3Yx5Yaub7N/y
 preauthorized:
   emails:
   - saeed.discovery@gmail.com

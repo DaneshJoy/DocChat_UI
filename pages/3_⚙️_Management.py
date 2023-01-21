@@ -1,5 +1,6 @@
 import os
 import shutil
+import requests
 
 import streamlit as st
 
@@ -33,6 +34,11 @@ def clear_docs():
                 os.makedirs(Paths.CHK_DIR)
             if not os.path.exists(Paths.URL_DIR):
                 os.makedirs(Paths.URL_DIR)
+
+            headers = {'Content-Type': 'application/json; charset=utf-8'}
+            r = requests.post("http://54.242.28.52/doc/clear", headers=headers,
+                              json={'name': st.session_state["username"]})
+            # timed_alert(r.json()['message'])
 
     timed_alert('✅ Cleared all documents', type_='success')
 
