@@ -67,8 +67,9 @@ def main():
                     response = openai.Completion.create(prompt=prompt, **COMPLETIONS_API_PARAMS)
                     full_ans = response["choices"][0]["text"].strip(" \n")
                     st.write('Answer:\n', full_ans.split('Ref:')[0])
-                    ref_ = full_ans.split('Ref:')[1].strip()
-                    st.markdown(f'Reference:\n "*{ref_}*"')
+                    if "I don't know" not in full_ans.split('Ref:')[0]:
+                        ref_ = full_ans.split('Ref:')[1].strip()
+                        st.markdown(f'Reference:\n "*{ref_}*"')
                     with st.expander('References', expanded=False):
                         for d in res['documents']:
                             st.write(d)
