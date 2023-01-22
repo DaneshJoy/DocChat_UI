@@ -41,7 +41,7 @@ def new_question():
     pass
 
 
-@st.cache(suppress_st_warning=True)
+@st.cache(suppress_st_warning=True, show_spinner=False)
 def show_answer():
     with st.spinner('Please wait...'):
         headers = {'Content-Type': 'application/json; charset=utf-8'}
