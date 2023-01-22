@@ -40,10 +40,12 @@ def logout(authenticator):
 def new_question():
     pass
 
+
 def main():
-    set_state_if_absent('prev_question', '')
     authenticator = auth()
     if authenticator:
+        set_state_if_absent('prev_question', '')
+        set_state_if_absent('question', '')
         st.markdown(SHOW_BAR, unsafe_allow_html=True)
         # set_state_if_absent('question', None)
 
