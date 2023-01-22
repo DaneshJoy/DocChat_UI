@@ -61,8 +61,9 @@ def show_answer():
             full_ans = response["choices"][0]["text"].strip(" \n")
             if "Ref:" in full_ans:
                 st.write('Answer:\n', full_ans.split('Ref:')[0])
-                ref_ = full_ans.split('Ref:')[1].strip()
-                st.markdown(f'Reference:\n "*{ref_}*"')
+                if "I don't know" not in full_ans:
+                    ref_ = full_ans.split('Ref:')[1].strip()
+                    st.markdown(f'Reference:\n "*{ref_}*"')
             else:
                 st.write('Answer:\n', full_ans)
             with st.expander('Related Contents', expanded=False):
