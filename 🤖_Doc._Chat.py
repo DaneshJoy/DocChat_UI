@@ -37,8 +37,11 @@ def logout(authenticator):
     st.sidebar.write(f'Logged in as "*{st.session_state["name"]}*"')
     authenticator.logout('Logout', 'sidebar')
 
+def new_question():
+    st.session_state.new_question = True
 
 def main():
+    set_state_if_absent(new_question, False)
     authenticator = auth()
     if authenticator:
         st.markdown(SHOW_BAR, unsafe_allow_html=True)
@@ -48,9 +51,9 @@ def main():
         st.markdown("##### Intelligent Question-Answering on Documents")
         # st.markdown('---')
         st.text_input(label="Query", value="", placeholder="Enter your question",
-                      key="question", label_visibility='hidden', on_change=send_question_to_api)
-        clicked = st.button('Answer', on_click=send_question_to_api)
-        if clicked:
+                      key="question", label_visibility='hidden', on_change=new_question)
+        clicked = st.button('Answer', on_click=new_question)
+        if clicked and not st.session_state.new_question:
             with st.spinner('Please wait...'):
                 headers = {'Content-Type': 'application/json; charset=utf-8'}
                 r = requests.post(f"http://54.242.28.52/doc/get_related_contents",
@@ -75,6 +78,7 @@ def main():
                     with st.expander('Related Contents', expanded=False):
                         for d in res['documents']:
                             st.write(d)
+            st.session_state.new_question = False
 
         logout(authenticator)
     else:
