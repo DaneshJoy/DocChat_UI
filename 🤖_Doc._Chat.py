@@ -58,6 +58,7 @@ def main():
             with st.spinner('Please wait...'):
                 headers = {'Content-Type': 'application/json; charset=utf-8'}
                 r = requests.post(f"http://54.242.28.52/doc/get_related_contents",
+                                  timeout=100,
                                   headers=headers,
                                   json={'name': st.session_state["username"],
                                         'question': st.session_state.question})
