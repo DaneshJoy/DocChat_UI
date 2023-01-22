@@ -66,10 +66,13 @@ def main():
                     prompt = header + "".join(chosen_sections) + "\n\n Q: " + st.session_state.question + "\n A:"
                     response = openai.Completion.create(prompt=prompt, **COMPLETIONS_API_PARAMS)
                     full_ans = response["choices"][0]["text"].strip(" \n")
-                    st.write('Answer:\n', full_ans.split('Ref:')[0])
-                    ref_ = full_ans.split('Ref:')[1].strip()
-                    st.markdown(f'Reference:\n "*{ref_}*"')
-                    with st.expander('References', expanded=False):
+                    if "Ref:" in full_ans:
+                        st.write('Answer:\n', full_ans.split('Ref:')[0])
+                        ref_ = full_ans.split('Ref:')[1].strip()
+                        st.markdown(f'Reference:\n "*{ref_}*"')
+                    else:
+                        st.write('Answer:\n', full_ans)
+                    with st.expander('Related Contents', expanded=False):
                         for d in res['documents']:
                             st.write(d)
 
