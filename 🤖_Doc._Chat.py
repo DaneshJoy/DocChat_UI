@@ -42,7 +42,7 @@ def new_question():
 
 def main():
     if not 'new_question' in st.session_state.keys():
-        set_state_if_absent(new_question, False)
+        set_state_if_absent('new_question', False)
     authenticator = auth()
     if authenticator:
         st.markdown(SHOW_BAR, unsafe_allow_html=True)
@@ -54,7 +54,7 @@ def main():
         st.text_input(label="Query", value="", placeholder="Enter your question",
                       key="question", label_visibility='hidden', on_change=new_question)
         clicked = st.button('Answer', on_click=new_question)
-        if clicked and not st.session_state.new_question:
+        if clicked and st.session_state.new_question:
             with st.spinner('Please wait...'):
                 headers = {'Content-Type': 'application/json; charset=utf-8'}
                 r = requests.post(f"http://54.242.28.52/doc/get_related_contents",
