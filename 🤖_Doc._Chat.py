@@ -41,8 +41,7 @@ def new_question():
     pass
 
 def main():
-    if not 'prev_question' in st.session_state.keys():
-        set_state_if_absent('prev_question', '')
+    set_state_if_absent('prev_question', '')
     authenticator = auth()
     if authenticator:
         st.markdown(SHOW_BAR, unsafe_allow_html=True)
