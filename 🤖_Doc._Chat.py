@@ -41,6 +41,35 @@ def new_question():
     pass
 
 
+@st.cache
+def show_answer():
+    with st.spinner('Please wait...'):
+        headers = {'Content-Type': 'application/json; charset=utf-8'}
+        r = requests.post(f"http://54.242.28.52/doc/get_related_contents",
+                          timeout=100,
+                          headers=headers,
+                          json={'name': st.session_state["username"],
+                                'question': st.session_state.question})
+        if 'error' in r.text.lower():
+            st.write('Answer: Not Found !')
+        else:
+            res = r.json()
+            refs = [d['content'] for d in res['documents']]
+            chosen_sections = '\n'.join(refs)
+            prompt = header + "".join(chosen_sections) + "\n\n Q: " + st.session_state.question + "\n A:"
+            response = openai.Completion.create(prompt=prompt, **COMPLETIONS_API_PARAMS)
+            full_ans = response["choices"][0]["text"].strip(" \n")
+            if "Ref:" in full_ans:
+                st.write('Answer:\n', full_ans.split('Ref:')[0])
+                ref_ = full_ans.split('Ref:')[1].strip()
+                st.markdown(f'Reference:\n "*{ref_}*"')
+            else:
+                st.write('Answer:\n', full_ans)
+            with st.expander('Related Contents', expanded=False):
+                for d in res['documents']:
+                    st.write(d)
+    st.session_state.prev_question = st.session_state.question
+
 def main():
     authenticator = auth()
     if authenticator:
@@ -56,32 +85,7 @@ def main():
                       key="question", label_visibility='hidden', on_change=new_question)
         clicked = st.button('Answer', on_click=new_question)
         if clicked and st.session_state.question != st.session_state.prev_question:
-            with st.spinner('Please wait...'):
-                headers = {'Content-Type': 'application/json; charset=utf-8'}
-                r = requests.post(f"http://54.242.28.52/doc/get_related_contents",
-                                  timeout=100,
-                                  headers=headers,
-                                  json={'name': st.session_state["username"],
-                                        'question': st.session_state.question})
-                if 'error' in r.text.lower():
-                    st.write('Answer: Not Found !')
-                else:
-                    res = r.json()
-                    refs = [d['content'] for d in res['documents']]
-                    chosen_sections = '\n'.join(refs)
-                    prompt = header + "".join(chosen_sections) + "\n\n Q: " + st.session_state.question + "\n A:"
-                    response = openai.Completion.create(prompt=prompt, **COMPLETIONS_API_PARAMS)
-                    full_ans = response["choices"][0]["text"].strip(" \n")
-                    if "Ref:" in full_ans:
-                        st.write('Answer:\n', full_ans.split('Ref:')[0])
-                        ref_ = full_ans.split('Ref:')[1].strip()
-                        st.markdown(f'Reference:\n "*{ref_}*"')
-                    else:
-                        st.write('Answer:\n', full_ans)
-                    with st.expander('Related Contents', expanded=False):
-                        for d in res['documents']:
-                            st.write(d)
-            st.session_state.prev_question = st.session_state.question
+            show_answer()
 
         logout(authenticator)
     else:
