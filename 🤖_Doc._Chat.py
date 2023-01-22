@@ -38,11 +38,11 @@ def logout(authenticator):
     authenticator.logout('Logout', 'sidebar')
 
 def new_question():
-    st.session_state.new_question = True
+    pass
 
 def main():
-    if not 'new_question' in st.session_state.keys():
-        set_state_if_absent('new_question', False)
+    if not 'prev_question' in st.session_state.keys():
+        set_state_if_absent('prev_question', '')
     authenticator = auth()
     if authenticator:
         st.markdown(SHOW_BAR, unsafe_allow_html=True)
@@ -54,7 +54,7 @@ def main():
         st.text_input(label="Query", value="", placeholder="Enter your question",
                       key="question", label_visibility='hidden', on_change=new_question)
         clicked = st.button('Answer', on_click=new_question)
-        if clicked and st.session_state.new_question:
+        if clicked and st.session_state.question != st.session_state.prev_question:
             with st.spinner('Please wait...'):
                 headers = {'Content-Type': 'application/json; charset=utf-8'}
                 r = requests.post(f"http://54.242.28.52/doc/get_related_contents",
@@ -80,7 +80,7 @@ def main():
                     with st.expander('Related Contents', expanded=False):
                         for d in res['documents']:
                             st.write(d)
-            st.session_state.new_question = False
+            st.session_state.question = st.session_state.prev_question
 
         logout(authenticator)
     else:
