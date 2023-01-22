@@ -41,6 +41,7 @@ def new_question():
     pass
 
 
+@st.cache(suppress_st_warning=True)
 def show_answer():
     with st.spinner('Please wait...'):
         headers = {'Content-Type': 'application/json; charset=utf-8'}
@@ -67,13 +68,13 @@ def show_answer():
             with st.expander('Related Contents', expanded=False):
                 for d in res['documents']:
                     st.write(d)
-    st.session_state.prev_question = st.session_state.question
+    # st.session_state.prev_question = st.session_state.question
 
 def main():
     authenticator = auth()
     if authenticator:
-        set_state_if_absent('prev_question', '')
-        set_state_if_absent('question', '')
+        # set_state_if_absent('prev_question', '')
+        # set_state_if_absent('question', '')
         st.markdown(SHOW_BAR, unsafe_allow_html=True)
         # set_state_if_absent('question', None)
 
@@ -83,7 +84,8 @@ def main():
         st.text_input(label="Query", value="", placeholder="Enter your question",
                       key="question", label_visibility='hidden', on_change=new_question)
         clicked = st.button('Answer', on_click=new_question)
-        if clicked and st.session_state.question != st.session_state.prev_question:
+        # if clicked and st.session_state.question != st.session_state.prev_question:
+        if clicked:
             show_answer()
 
         logout(authenticator)
