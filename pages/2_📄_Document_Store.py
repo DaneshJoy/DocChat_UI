@@ -34,7 +34,7 @@ def process_docs():
             clean_header_footer=False,
             split_by="word",
             split_length=200,
-            split_overlap=50,
+            split_overlap=20,
             split_respect_sentence_boundary=True,
     )
     chunks = preprocessor.process(all_docs)
