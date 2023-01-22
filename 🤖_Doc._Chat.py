@@ -79,7 +79,7 @@ def main():
                     with st.expander('Related Contents', expanded=False):
                         for d in res['documents']:
                             st.write(d)
-            st.session_state.question = st.session_state.prev_question
+            st.session_state.prev_question = st.session_state.question
 
         logout(authenticator)
     else:
