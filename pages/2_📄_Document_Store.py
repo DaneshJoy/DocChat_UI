@@ -10,7 +10,7 @@ import streamlit as st
 from streamlit_custom_notification_box import custom_notification_box
 
 from utils.utils import timed_alert
-from utils.html_codes import notif_style
+from utils.html_codes import NOTIF_STYLE
 from utils.config import Paths
 from utils.utils import set_state_if_absent
 
@@ -129,7 +129,7 @@ def upload_doc():
                 custom_notification_box(icon='add_task',
                                         textDisplay=message,
                                         externalLink='', url='#',
-                                        styles=notif_style, key="qwerty")
+                                        styles=NOTIF_STYLE, key="qwerty")
                 time.sleep(2)
 
         uploaded_files = None

@@ -1,3 +1,13 @@
+###---- Hide Streamlit menu and footer ----
+HIDE_ST = """
+        <style>
+        #MainMenu {visibility: hidden;}
+        footer {visibility: hidden;}
+        header {visibility: hidden;}
+        .viewerBadge_container__1QSob{visibility: hidden;}
+        </style>
+        """
+
 ###---- Hide contents of the sidebar ----
 HIDE_BAR = """
     <style>
@@ -11,7 +21,7 @@ HIDE_BAR = """
     </style>
 """
 
-###---- Hide contents of the sidebar ----
+###---- Show contents of the sidebar ----
 SHOW_BAR = """
     <style>
     [data-testid="stSidebar"][aria-expanded="true"] > div:first-child {
@@ -24,17 +34,8 @@ SHOW_BAR = """
     </style>
 """
 
-###---- Hide Streamlit menu and footer ----
-HIDE_ST = """
-        <style>
-        #MainMenu {visibility: hidden;}
-        footer {visibility: hidden;}
-        header {visibility: hidden;}
-        </style>
-        """
-
 ###---- Custom notification box style ----
-notif_style = {'material-icons': {'color': 'lightgreen'},
+NOTIF_STYLE = {'material-icons': {'color': 'lightgreen'},
                'text-icon-link-close-container': {'box-shadow': '#3896de 1px 1px 1px 1px',
                                                   'width': '90%',
                                                   'justify-content': 'space-between',

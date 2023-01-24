@@ -60,3 +60,4 @@ def timed_alert(message, wait=3, type_='success', sidebar=False):
 def set_state_if_absent(key, value):
     if key not in st.session_state:
         st.session_state[key] = value
+        print(f'added session state "{key}" with value "{value}"')
