@@ -59,7 +59,7 @@ def get_related_docs(question):
     return refs, refs_raw
 
 
-# @st.cache(suppress_st_warning=True)
+@st.cache(suppress_st_warning=True)
 def get_answer(refs, question):
     chosen_sections = []
     for i in refs.keys():
