@@ -59,10 +59,13 @@ def get_related_docs(question):
     return refs, refs_raw
 
 
-@st.cache(suppress_st_warning=True)
+# @st.cache(suppress_st_warning=True)
 def get_answer(refs, question):
-    chosen_sections = [d['content'] for d in refs['documents']]
-    chosen_sections = '\n'.join(refs)
+    chosen_sections = []
+    for i in refs.keys():
+        chosen_sections.append(refs[i][f'Ref {i+1}'])
+    # chosen_sections = [d['content'] for d in refs['documents']]
+    chosen_sections = '\n'.join(chosen_sections)
     prompt = header + "".join(chosen_sections) + "\n\n Q: " + question + "\n A:"
     response = openai.Completion.create(prompt=prompt, **COMPLETIONS_API_PARAMS)
     full_ans = response["choices"][0]["text"].strip(" \n")
@@ -123,7 +126,7 @@ def main():
             if related_contents == 'Not Found !':
                 st.write(related_contents)
             else:
-                full_ans = get_answer(refs_raw, question_text)
+                full_ans = get_answer(related_contents, question_text)
                 ans_part = full_ans.split('Ref:')[0]
                 st.write('Answer:\n', ans_part)
                 if "I don't know" not in ans_part:
