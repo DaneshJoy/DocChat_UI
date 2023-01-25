@@ -10,8 +10,8 @@ import streamlit as st
 from streamlit_custom_notification_box import custom_notification_box
 
 from utils.utils import timed_alert
-from utils.html_codes import NOTIF_STYLE
-from utils.config import Paths
+from utils.html_codes import *
+from utils.config import Paths, Urls
 from utils.utils import set_state_if_absent
 
 
@@ -52,7 +52,7 @@ def process_docs():
         chunk_files = [('files', open(ff, 'rb')) for ff in chk_paths]
         # headers = {'Content-Type': 'application/json; charset=utf-8'}
         # headers = {'Content-type': 'multipart/form-data'}
-        r = requests.post("http://54.242.28.52/doc/send_chunks",
+        r = requests.post(Urls.CHK_URL,
                           files=chunk_files,
                           params={"user": st.session_state["username"]})
         print('Send chunk files status:', r.status_code)

@@ -4,7 +4,7 @@ import requests
 
 import streamlit as st
 
-from utils.config import Paths
+from utils.config import Paths, Urls
 from utils.utils import timed_alert
 
 
@@ -36,7 +36,7 @@ def clear_docs():
                 os.makedirs(Paths.URL_DIR)
 
             headers = {'Content-Type': 'application/json; charset=utf-8'}
-            r = requests.post("http://54.242.28.52/doc/clear", headers=headers,
+            r = requests.post(Urls.CLR_URL, headers=headers,
                               json={'name': st.session_state["username"]})
             # timed_alert(r.json()['message'])
 
