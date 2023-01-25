@@ -11,7 +11,6 @@ from utils.utils import timed_alert
 from utils.html_codes import *
 from utils.api import send_question_to_api
 from utils.utils import set_state_if_absent
-from utils.config import Urls
 
 
 st.set_page_config(page_title="Doc. Chat", page_icon="🤖", layout="wide",
@@ -43,6 +42,7 @@ def new_question():
 
 @st.cache(suppress_st_warning=True)
 def get_related_docs(question):
+    from utils.config import Urls
     headers = {'Content-Type': 'application/json; charset=utf-8'}
     r = requests.post(Urls.RTD_URL,
                       timeout=100,

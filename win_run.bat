@@ -4,5 +4,5 @@
 chcp 65001 >NUL
 
 CALL conda activate deploy
-streamlit run "🤖_Doc._Chat.py"
+streamlit run "🤖_Doc_Chat.py" --server.port 8080
 PAUSE
