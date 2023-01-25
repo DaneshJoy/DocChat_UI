@@ -7,7 +7,4 @@ textColor="#dcdcdc"
 [server]
 maxUploadSize=50
 enableCORS=false
-
-
-[browser]
 headless=true
