@@ -15,6 +15,6 @@ class Urls:
     # CLR_URL = 'http://54.242.28.52/doc/clear'
     # RTD_URL = 'http://54.242.28.52/doc/get_related_contents'
 
-    CHK_URL = 'http://localhost:8080/doc/send_chunks'
-    CLR_URL = 'http://localhost:8080/doc/clear'
-    RTD_URL = 'http://localhost:8080/doc/get_related_contents'
+    CHK_URL = 'http://localhost:8088/doc/send_chunks'
+    CLR_URL = 'http://localhost:8088/doc/clear'
+    RTD_URL = 'http://localhost:8088/doc/get_related_contents'
