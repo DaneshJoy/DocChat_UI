@@ -1,0 +1,22 @@
+sudo nano /etc/nginx/sites-enabled/streamlit_nginx
+
+server {                                                                                            │ubuntu@ip-172-31-26-197:~/docchat_ui/users/saeed/docs$
+    listen 80;                                                                                      │cd ..
+    server_name 54.242.28.52;                                                                       │ubuntu@ip-172-31-26-197:~/docchat_ui/users/saeed$ cd te
+    client_max_body_size 50m;                                                                       │mp
+                                                                                                    │ubuntu@ip-172-31-26-197:~/docchat_ui/users/saeed/temp$
+    location / {                                                                                    │ls
+        proxy_pass http://0.0.0.0:8501;                                                             │ubuntu@ip-172-31-26-197:~/docchat_ui/users/saeed/temp$
+        proxy_http_version 1.1;                                                                     │cd ..
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;                                │ubuntu@ip-172-31-26-197:~/docchat_ui/users/saeed$ ls t
+        proxy_set_header Host $host;                                                                │temp/ txts/
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";                                                      │ubuntu@ip-172-31-26-197:~/docchat_ui/users/saeed/temp$
+        proxy_read_timeout 86400;                                                                   │cd ..
+    }                                                                                               │ubuntu@ip-172-31-26-197:~/docchat_ui/users/saeed$ ls t
+}
+
+echo "export OPENAI_API_KEY='YOUR_API_KEY'" >> ~/.bashrc
+source ~/.bashrc
+
+sudo streamlit run 🤖_Doc_Chat.py --server.port 8501 --server.enableXsrfProtection false
