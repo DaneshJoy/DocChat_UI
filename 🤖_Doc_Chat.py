@@ -26,6 +26,7 @@ COMPLETIONS_API_PARAMS = {
 }
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
+print(openai.api_key)
 header = """Answer the question as truthfully as possible using the provided context, \
 and include the parts of the context that are used to generate the answer after the answer starting with "\nRef:", \
 and if the answer is not contained within the text below, say "I don't know."\n\nContext:\n"""
