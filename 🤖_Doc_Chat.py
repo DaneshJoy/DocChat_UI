@@ -26,7 +26,7 @@ COMPLETIONS_API_PARAMS = {
 }
 
 # openai.api_key = os.getenv("OPENAI_API_KEY")
-openai.api_key = "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"
+openai.api_key = "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"
 header = """Answer the question as truthfully as possible using the provided context, \
 and include the parts of the context that are used to generate the answer after the answer starting with "\nRef:", \
 and if the answer is not contained within the text below, say "I don't know."\n\nContext:\n"""
