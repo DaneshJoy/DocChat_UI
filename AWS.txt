@@ -19,4 +19,7 @@ server {                                                                        
 echo "export OPENAI_API_KEY='YOUR_API_KEY'" >> ~/.bashrc
 source ~/.bashrc
 
+or use file in code:
+openai.api_key_path = <PATH_TO_FILE>
+
 sudo streamlit run 🤖_Doc_Chat.py --server.port 8501 --server.enableXsrfProtection false
