@@ -1,7 +1,7 @@
 ###---- Hide Streamlit menu and footer ----
 HIDE_ST = """
         <style>
-        #MainMenu {visibility: hidden;}
+        #MainMenu {visibility: visible;}
         footer {visibility: hidden;}
         header {visibility: hidden;}
         .viewerBadge_container__1QSob{visibility: hidden;}
